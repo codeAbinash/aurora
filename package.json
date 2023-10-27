@@ -1,0 +1,47 @@
+{
+  "name": "aurora-code",
+  "type": "module",
+  "version": "1.0.1",
+  "description": "The C code highlighting engine for the web.",
+  "license": "MIT",
+  "author": "Abinash Karmakar",
+  "module": "./dist/index.js",
+  "homepage": "https://github.com/codeAbinash/aurora",
+  "main": "./dist/index.umd.cjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codeAbinash/aurora.git"
+  },
+  "bugs": {
+    "url":  "https://github.com/codeAbinash/aurora/issues"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.umd.cjs"
+    },
+    "./themes/one dark pro" : "./dist/themes/one dark pro.css"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test-ui": "vitest --ui",
+    "prettier": "prettier --check .",
+    "prettier:fix": "prettier --write ."
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.9",
+    "@vitest/ui": "^0.34.6",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.6",
+    "vite": "^4.4.5",
+    "vite-plugin-dts": "^3.6.1"
+  }
+}
