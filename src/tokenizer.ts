@@ -485,7 +485,7 @@ function stringLiteral(char: string, code: string, curr: number, tokens: Token[]
         case 'l':
           switch (c2) {
             case 'l':
-              if ((isCommonFormatSpecifier(c3), true)) formatSpecifier3(format_specifier);
+              if (isCommonFormatSpecifier(c3, true)) formatSpecifier3(format_specifier);
               break;
             default:
               if (isCommonFormatSpecifier(c2, false)) formatSpecifier2(format_specifier);
