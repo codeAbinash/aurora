@@ -103,7 +103,7 @@ If you are using React you can use
 
 ```tsx
 import aurora from 'aurora-code';
-import 'aurora-code/themes/one dark pro'; // (css file)
+import 'aurora-code/themes/oneDarkPro.css'; // (css file)
 // or you may use your own css
 ...
 ...
@@ -141,7 +141,7 @@ Download the https://cdn.jsdelivr.net/npm/aurora-code@latest/dist/index.umd.cjs 
 ```html
 <script src="index.umd.cjs" defer></script>
 
-<link rel="stylesheet" href="one dark pro.css" />
+<link rel="stylesheet" href="oneDarkPro.css" />
 
 <body style="background-color: #070e22">
   <pre><code id="code-block"></code></pre>
@@ -160,7 +160,7 @@ Download the https://cdn.jsdelivr.net/npm/aurora-code@latest/dist/index.umd.cjs 
 Here is an example of theme object for configuring the theme.
 
 ```ts
-// One Dark Pro
+// One Dark Pro Theme
 one_dark_pro = {
   comment: '#5c6370',
   comment_start: '#5c6370',

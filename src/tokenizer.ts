@@ -47,11 +47,13 @@ export type Token = {
 
 const WHITESPACE = /\s/;
 // const ESCAPE = /^(n|t|r|v|b|a|f|\\|\?|\'|\"|0)$/;
-const FORMAT_SPECIFIER_END = /^(d|i|u|o|x|X|f|F|e|E|g|G|c|s|%)$/;
+// const FORMAT_SPECIFIER_END = /^(d|i|u|o|x|X|f|F|e|E|g|G|c|s|%)$/;
 const FORMAT_SPECIFIER_WIDTH = /^([0-9]+|\.)$/;
-const OCTAL_DIGIT = /^[0-7]$/;
+const OCT_DIGIT = /^[0-7]$/;
 const HEX_DIGIT = /^[0-9a-f]$/i;
-const BINARY_DIGIT = /^[01]$/;
+const BIN_DIGIT = /^[01]$/;
+const NAME = /[a-z_]/i;
+const DIGIT = /\d/;
 
 export default function tokenizer(code: string) {
   let curr = 0;
@@ -118,7 +120,7 @@ export default function tokenizer(code: string) {
     }
 
     // Names
-    if (/[a-z_]/i.test(char!)) {
+    if (NAME.test(char!)) {
       ({ char, curr } = nameLiteral(char, code, curr, tokens));
       continue;
     }
@@ -318,7 +320,7 @@ function numberLiteral(char: string, code: string, curr: number, tokens: Token[]
       return { char, curr };
     }
 
-    if (OCTAL_DIGIT.test(char)) {
+    if (OCT_DIGIT.test(char)) {
       ({ char, curr } = octLiteral(prev_char, char, code, curr, tokens));
       return { char, curr };
     }
@@ -335,7 +337,7 @@ function numberLiteral(char: string, code: string, curr: number, tokens: Token[]
 function octLiteral(prev_char: string, char: string, code: string, curr: number, tokens: Token[]) {
   let value = '';
   tokens.push({ type: 'oct_prefix', value: prev_char });
-  while (OCTAL_DIGIT.test(char)) {
+  while (OCT_DIGIT.test(char)) {
     value += char;
     char = code[++curr];
   }
@@ -347,7 +349,7 @@ function binLiteral(prev_char: string, char: string, code: string, curr: number,
   let value = '';
   tokens.push({ type: 'bin_prefix', value: prev_char + char });
   char = code[++curr];
-  while (BINARY_DIGIT.test(char)) {
+  while (BIN_DIGIT.test(char)) {
     value += char;
     char = code[++curr];
   }
@@ -370,7 +372,7 @@ function hexLiteral(prev_char: string, char: string, code: string, curr: number,
 function decimalNumberLiteral(prev_char: string, char: string, code: string, curr: number, tokens: Token[]) {
   let value = prev_char;
   let dots = 0;
-  while (/\d/.test(char) || (char === '.' && ++dots)) {
+  while (DIGIT.test(char) || (char === '.' && ++dots)) {
     value += char;
     char = code[++curr];
   }
@@ -413,6 +415,7 @@ function stringLiteral(char: string, code: string, curr: number, tokens: Token[]
   let value = '';
   char = code[++curr];
   tokens.push({ type: 'quote', value: '"', subtype: 'double' });
+
   while (char !== '"') {
     if (curr >= length) {
       console.warn('string unclosed at end of file');
@@ -428,6 +431,7 @@ function stringLiteral(char: string, code: string, curr: number, tokens: Token[]
     // Check for format specifier
     if (char == '%') {
       tokens.push({ type: 'string', value, subtype: 'double' }); // Push the previous value as string
+      value = ''; // Reset the value
       tokens.push({ type: 'format_specifier', value: '%' }); // Push the '%' sign as format specifier
       let format_specifier = '';
       char = code[++curr];
@@ -456,7 +460,6 @@ function stringLiteral(char: string, code: string, curr: number, tokens: Token[]
       let dots = 0;
       while (FORMAT_SPECIFIER_WIDTH.test(char)) {
         // If number of dots is more than 1 then it is not a format specifier
-        value = '';
         if (char == '.') dots++;
         format_specifier += char;
         char = code[++curr];
@@ -466,18 +469,75 @@ function stringLiteral(char: string, code: string, curr: number, tokens: Token[]
         // It is not a format specifier
         value += format_specifier;
         tokens.push({ type: 'string', value, subtype: 'double' });
-        value = '';
         continue;
       }
 
-      // Add the last character to format specifier
-      if (FORMAT_SPECIFIER_END.test(char)) {
-        // It is the end of format specifier
-        format_specifier += char;
+      if (format_specifier.length >= 1) {
         tokens.push({ type: 'format_specifier', value: format_specifier });
-        value = '';
-        char = code[++curr];
-        continue;
+        format_specifier = '';
+      }
+
+      const c1 = char,
+        c2 = code[curr + 1],
+        c3 = code[curr + 2];
+
+      switch (c1) {
+        case 'l':
+          switch (c2) {
+            case 'l':
+              if ((isCommonFormatSpecifier(c3), true)) formatSpecifier3(format_specifier);
+              break;
+            default:
+              if (isCommonFormatSpecifier(c2, false)) formatSpecifier2(format_specifier);
+              break;
+          }
+          break;
+        case 'L':
+          if (isCommonFormatSpecifier(c2, false)) formatSpecifier2(format_specifier);
+          break;
+        case 'h':
+          switch (c2) {
+            case 'h':
+              if (isCommonFormatSpecifier(c3, false)) formatSpecifier3(format_specifier);
+              break;
+            default:
+              if (isCommonFormatSpecifier(c2, false)) formatSpecifier2(format_specifier);
+              break;
+          }
+          break;
+        case 'j':
+          switch (c2) {
+            case 'j':
+              if (isCommonFormatSpecifier(c3)) formatSpecifier3(format_specifier);
+              break;
+            default:
+              if (isCommonFormatSpecifier(c2, false)) formatSpecifier2(format_specifier);
+              break;
+          }
+          break;
+        case 'z':
+          switch (c2) {
+            case 'z':
+              if (isCommonFormatSpecifier(c3)) formatSpecifier3(format_specifier);
+              break;
+            default:
+              if (isCommonFormatSpecifier(c2, false)) formatSpecifier2(format_specifier);
+              break;
+          }
+          break;
+        case 't':
+          switch (c2) {
+            case 't':
+              if (isCommonFormatSpecifier(c3)) formatSpecifier3(format_specifier);
+              break;
+            default:
+              if (isCommonFormatSpecifier(c2, false)) formatSpecifier2(format_specifier);
+              break;
+          }
+          break;
+        default:
+          if (isSingleFormatSpecifier(c1)) formatSpecifier1(format_specifier);
+          break;
       }
 
       tokens.push({ type: 'string', value: format_specifier });
@@ -493,6 +553,25 @@ function stringLiteral(char: string, code: string, curr: number, tokens: Token[]
   else tokens.push({ type: 'quote', value: '"', subtype: 'double' });
   curr++;
   return { char, curr };
+
+  function formatSpecifier3(format_specifier: string) {
+    format_specifier += char + code[curr + 1] + code[curr + 2];
+    curr += 3;
+    char = code[curr];
+    tokens.push({ type: 'format_specifier', value: format_specifier });
+  }
+  function formatSpecifier2(format_specifier: string) {
+    format_specifier += char + code[curr + 1];
+    curr += 2;
+    char = code[curr];
+    tokens.push({ type: 'format_specifier', value: format_specifier });
+  }
+  function formatSpecifier1(format_specifier: string) {
+    format_specifier += char;
+    curr++;
+    char = code[curr];
+    tokens.push({ type: 'format_specifier', value: format_specifier });
+  }
 }
 
 function multiLineComment(char: string, code: string, curr: number, tokens: Token[]) {
@@ -513,6 +592,7 @@ function multiLineComment(char: string, code: string, curr: number, tokens: Toke
   }
   return { char, curr };
 }
+
 function isMultiLineCommentEnd(code: string, curr: number) {
   return code[curr] === '*' && code[curr + 1] === '/';
 }
@@ -559,5 +639,46 @@ function isEscapeSequence(char: string) {
     char === '"' ||
     char === '0' ||
     char === '\\'
+  );
+}
+
+function isCommonFormatSpecifier(ch: string, sensitive = true) {
+  ch = sensitive ? ch : ch.toLowerCase();
+  return (
+    ch === 'a' ||
+    ch === 'c' ||
+    ch === 'd' ||
+    ch === 'e' ||
+    ch === 'f' ||
+    ch === 'g' ||
+    ch === 'i' ||
+    ch === 'n' ||
+    ch === 'o' ||
+    ch === 'p' ||
+    ch === 's' ||
+    ch === 'u' ||
+    ch === 'x'
+  );
+}
+
+function isSingleFormatSpecifier(ch: string) {
+  return (
+    ch === 'd' ||
+    ch === 'i' ||
+    ch === 'u' ||
+    ch === 'o' ||
+    ch === 'x' ||
+    ch === 'X' ||
+    ch === 'f' ||
+    ch === 'F' ||
+    ch === 'e' ||
+    ch === 'E' ||
+    ch === 'g' ||
+    ch === 'G' ||
+    ch === 'c' ||
+    ch === 's' ||
+    ch === 'p' ||
+    ch === 'n' ||
+    ch === '%'
   );
 }

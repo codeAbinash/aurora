@@ -27,3 +27,5 @@ export default function aurora(code: string, config = defaultConfig) {
   }
   return highlighted;
 }
+
+export { tokenizer, nodeGenerator, classHighlighter, inlineHighlighter, one_dark_pro };
