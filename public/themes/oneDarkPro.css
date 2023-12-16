@@ -52,6 +52,11 @@
   color: #98c379;
 }
 
+/* Quote color */
+.aurora-quote {
+  color: #98c379;
+}
+
 /* Single quote color */
 .aurora-quote.single {
   color: #98c379;

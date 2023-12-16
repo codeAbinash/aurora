@@ -17,7 +17,9 @@ export type Token = {
     | 'keyword'
     | 'name'
     | 'string'
-    | 'quote'
+    | 'quote double'
+    | 'quote single'
+    | 'quote angle'
     | 'format_specifier'
     | 'number'
     | 'bin_prefix'
@@ -40,9 +42,26 @@ export type Token = {
     | 'open_square'
     | 'close_square'
     | 'whitespace'
-    | 'unknown';
+    | 'unknown'
+    | 'open_paren bracket0'
+    | 'open_paren bracket1'
+    | 'open_paren bracket2'
+    | 'close_paren bracket0'
+    | 'close_paren bracket1'
+    | 'close_paren bracket2'
+    | 'open_curly bracket0'
+    | 'open_curly bracket1'
+    | 'open_curly bracket2'
+    | 'close_curly bracket0'
+    | 'close_curly bracket1'
+    | 'close_curly bracket2'
+    | 'open_square bracket0'
+    | 'open_square bracket1'
+    | 'open_square bracket2'
+    | 'close_square bracket0'
+    | 'close_square bracket1'
+    | 'close_square bracket2';
   value: string;
-  subtype?: string;
 };
 
 const WHITESPACE = /\s/;
@@ -59,6 +78,10 @@ export default function tokenizer(code: string) {
   let curr = 0;
   const length = code.length;
   const tokens: Token[] = [];
+
+  let square_count = 0;
+  let curly_count = 0;
+  let paren_count = 0;
 
   while (curr < length) {
     let char = code[curr];
@@ -84,7 +107,7 @@ export default function tokenizer(code: string) {
         ({ char, curr } = multiLineComment(char, code, curr, tokens));
         continue;
       }
-      tokens.push({ type: 'operator', value: '/', subtype: 'division' });
+      tokens.push({ type: 'operator', value: '/' });
       continue;
     }
 
@@ -127,70 +150,94 @@ export default function tokenizer(code: string) {
 
     switch (char) {
       case '{':
-        tokens.push({ type: 'open_curly', value: '{' });
+        tokens.push({
+          type: ('open_curly bracket' + (curly_count >= 0 ? curly_count % 3 : '')) as Token['type'],
+          value: '{',
+        });
+        curly_count++;
         break;
       case '}':
-        tokens.push({ type: 'close_curly', value: '}' });
+        curly_count--;
+        tokens.push({
+          type: ('close_curly bracket' + (curly_count >= 0 ? curly_count % 3 : '')) as Token['type'],
+          value: '}',
+        });
         break;
       case '(':
-        tokens.push({ type: 'open_paren', value: '(' });
+        tokens.push({
+          type: ('open_paren bracket' + (paren_count >= 0 ? paren_count % 3 : '')) as Token['type'],
+          value: '(',
+        });
+        paren_count++;
         break;
       case ')':
-        tokens.push({ type: 'close_paren', value: ')' });
+        paren_count--;
+        tokens.push({
+          type: ('close_paren bracket' + (paren_count >= 0 ? paren_count % 3 : '')) as Token['type'],
+          value: ')',
+        });
         break;
       case '[':
-        tokens.push({ type: 'open_square', value: '[' });
+        tokens.push({
+          type: ('open_square bracket' + (square_count >= 0 ? square_count % 3 : '')) as Token['type'],
+          value: '[',
+        });
+        square_count++;
         break;
       case ']':
-        tokens.push({ type: 'close_square', value: ']' });
+        square_count--;
+        tokens.push({
+          type: ('close_square bracket' + (square_count >= 0 ? square_count % 3 : '')) as Token['type'],
+          value: ']',
+        });
         break;
       case '+':
-        tokens.push({ type: 'operator', value: '+', subtype: 'addition' });
+        tokens.push({ type: 'operator', value: '+' });
         break;
       case '-':
-        tokens.push({ type: 'operator', value: '-', subtype: 'subtraction' });
+        tokens.push({ type: 'operator', value: '-' });
         break;
       case '*':
-        tokens.push({ type: 'operator', value: '*', subtype: 'multiplication' });
+        tokens.push({ type: 'operator', value: '*' });
         break;
       case '/':
-        tokens.push({ type: 'operator', value: '/', subtype: 'division' });
+        tokens.push({ type: 'operator', value: '/' });
         break;
       case '%':
-        tokens.push({ type: 'operator', value: '%', subtype: 'modulo' });
+        tokens.push({ type: 'operator', value: '%' });
         break;
       case '=':
-        tokens.push({ type: 'operator', value: '=', subtype: 'assignment' });
+        tokens.push({ type: 'operator', value: '=' });
         break;
       case '&':
-        tokens.push({ type: 'operator', value: '&', subtype: 'address' });
+        tokens.push({ type: 'operator', value: '&' });
         break;
       case '|':
-        tokens.push({ type: 'operator', value: '|', subtype: 'or' });
+        tokens.push({ type: 'operator', value: '|' });
         break;
       case '^':
-        tokens.push({ type: 'operator', value: '^', subtype: 'xor' });
+        tokens.push({ type: 'operator', value: '^' });
         break;
       case '~':
-        tokens.push({ type: 'operator', value: '~', subtype: 'not' });
+        tokens.push({ type: 'operator', value: '~' });
         break;
       case '!':
-        tokens.push({ type: 'operator', value: '!', subtype: 'negate' });
+        tokens.push({ type: 'operator', value: '!' });
         break;
       case '<':
-        tokens.push({ type: 'operator', value: '<', subtype: 'less_than' });
+        tokens.push({ type: 'operator', value: '<' });
         break;
       case '>':
-        tokens.push({ type: 'operator', value: '>', subtype: 'greater_than' });
+        tokens.push({ type: 'operator', value: '>' });
         break;
       case '?':
-        tokens.push({ type: 'operator', value: '?', subtype: 'question' });
+        tokens.push({ type: 'operator', value: '?' });
         break;
       case ':':
         tokens.push({ type: 'colon', value: ':' });
         break;
       case '.':
-        tokens.push({ type: 'operator', value: '.', subtype: 'dot' });
+        tokens.push({ type: 'operator', value: '.' });
         break;
       case ',':
         tokens.push({ type: 'comma', value: ',' });
@@ -211,7 +258,7 @@ function preprocessorLiteral(char: string, code: string, curr: number, length: n
   let value = char;
   char = code[++curr];
 
-  while (char !== ' ') {
+  while (char !== ' ' && char !== '\n' && char !== '\t' && char !== '\r' && char !== '"' && char !== '<') {
     if (curr >= length) break;
     value += char;
     char = code[++curr];
@@ -235,10 +282,9 @@ function headerFileLiteral(char: string, code: string, curr: number, tokens: Tok
   tokens.push({ type: 'whitespace', value });
 
   value = '';
+  tokens.push({ type: 'quote double', value: '"' });
 
-  let headerFile = '';
   if (char === '"') {
-    headerFile = char;
     char = code[++curr];
     while (char !== '"') {
       if (curr >= code.length) {
@@ -247,18 +293,16 @@ function headerFileLiteral(char: string, code: string, curr: number, tokens: Tok
       }
       if (curr >= code.length) break;
       value += char;
-      headerFile += char;
       char = code[++curr];
     }
-    headerFile += char;
     curr++;
-    tokens.push({ type: 'header_file', value: headerFile });
+    tokens.push({ type: 'header_file', value });
+    tokens.push({ type: 'quote double', value: '"' });
     return { char, curr };
   }
 
   if (char === '<') {
     // headerFile = char == '<' ? '&lt' : char;
-    headerFile = char;
     char = code[++curr];
     while (char !== '>') {
       if (curr >= code.length) {
@@ -267,13 +311,12 @@ function headerFileLiteral(char: string, code: string, curr: number, tokens: Tok
       }
       if (curr >= code.length) break;
       value += char;
-      headerFile += char;
       char = code[++curr];
     }
     // headerFile += char == '>' ? '&gt' : char;
-    headerFile += char;
     curr++;
-    tokens.push({ type: 'header_file', value: headerFile });
+    tokens.push({ type: 'header_file', value });
+    tokens.push({ type: 'quote angle', value: '>' });
     return { char, curr };
   }
 
@@ -341,7 +384,7 @@ function octLiteral(prev_char: string, char: string, code: string, curr: number,
     value += char;
     char = code[++curr];
   }
-  tokens.push({ type: 'number', value, subtype: 'octal' });
+  tokens.push({ type: 'number', value });
   return { char, curr };
 }
 
@@ -353,7 +396,7 @@ function binLiteral(prev_char: string, char: string, code: string, curr: number,
     value += char;
     char = code[++curr];
   }
-  tokens.push({ type: 'number', value, subtype: 'binary' });
+  tokens.push({ type: 'number', value });
   return { char, curr };
 }
 
@@ -365,7 +408,7 @@ function hexLiteral(prev_char: string, char: string, code: string, curr: number,
     value += char;
     char = code[++curr];
   }
-  tokens.push({ type: 'number', value, subtype: 'hexadecimal' });
+  tokens.push({ type: 'number', value });
   return { char, curr };
 }
 
@@ -378,7 +421,7 @@ function decimalNumberLiteral(prev_char: string, char: string, code: string, cur
   }
   if (dots > 1) {
     console.warn('invalid number: ' + value);
-    tokens.push({ type: 'unknown', value, subtype: 'invalid' });
+    tokens.push({ type: 'unknown', value });
     value = '';
   }
   tokens.push({ type: 'number', value });
@@ -387,7 +430,7 @@ function decimalNumberLiteral(prev_char: string, char: string, code: string, cur
 
 function characterLiteral(tokens: Token[], char: string, code: string, curr: number, length: number) {
   let value = '';
-  tokens.push({ type: 'quote', value: "'", subtype: 'single' });
+  tokens.push({ type: 'quote single', value: "'" });
   char = code[++curr];
   while (char !== "'") {
     if (curr >= length) {
@@ -397,16 +440,16 @@ function characterLiteral(tokens: Token[], char: string, code: string, curr: num
     // Check for escape sequence
     if (char == '\\') {
       // Push the previous value as string
-      tokens.push({ type: 'string', value, subtype: 'single' });
+      tokens.push({ type: 'string', value });
       ({ value, char, curr } = escapeSequence(tokens, value, char, code, curr));
       continue;
     }
     value += char;
     char = code[++curr];
   }
-  tokens.push({ type: 'string', value, subtype: 'single' });
+  tokens.push({ type: 'string', value });
   if (char !== "'") console.warn('character literal unclosed at end of file');
-  else tokens.push({ type: 'quote', value: "'", subtype: 'single' });
+  else tokens.push({ type: 'quote single', value: "'" });
   curr++;
   return { char, curr };
 }
@@ -414,7 +457,7 @@ function characterLiteral(tokens: Token[], char: string, code: string, curr: num
 function stringLiteral(char: string, code: string, curr: number, tokens: Token[], length: number) {
   let value = '';
   char = code[++curr];
-  tokens.push({ type: 'quote', value: '"', subtype: 'double' });
+  tokens.push({ type: 'quote double', value: '"' });
 
   while (char !== '"') {
     if (curr >= length) {
@@ -423,14 +466,14 @@ function stringLiteral(char: string, code: string, curr: number, tokens: Token[]
     }
     // Check for escape sequence
     if (char == '\\') {
-      tokens.push({ type: 'string', value, subtype: 'double' }); // Push the previous value as string
+      tokens.push({ type: 'string', value }); // Push the previous value as string
       ({ value, char, curr } = escapeSequence(tokens, value, char, code, curr));
       continue;
     }
 
     // Check for format specifier
     if (char == '%') {
-      tokens.push({ type: 'string', value, subtype: 'double' }); // Push the previous value as string
+      tokens.push({ type: 'string', value }); // Push the previous value as string
       value = ''; // Reset the value
       tokens.push({ type: 'format_specifier', value: '%' }); // Push the '%' sign as format specifier
       let format_specifier = '';
@@ -468,7 +511,7 @@ function stringLiteral(char: string, code: string, curr: number, tokens: Token[]
       if (dots > 1) {
         // It is not a format specifier
         value += format_specifier;
-        tokens.push({ type: 'string', value, subtype: 'double' });
+        tokens.push({ type: 'string', value });
         continue;
       }
 
@@ -548,9 +591,9 @@ function stringLiteral(char: string, code: string, curr: number, tokens: Token[]
     value += char;
     char = code[++curr];
   }
-  tokens.push({ type: 'string', value, subtype: 'double' });
+  tokens.push({ type: 'string', value });
   if (char !== '"') console.warn('string unclosed at end of file');
-  else tokens.push({ type: 'quote', value: '"', subtype: 'double' });
+  else tokens.push({ type: 'quote double', value: '"' });
   curr++;
   return { char, curr };
 
@@ -576,16 +619,16 @@ function stringLiteral(char: string, code: string, curr: number, tokens: Token[]
 
 function multiLineComment(char: string, code: string, curr: number, tokens: Token[]) {
   let value = '';
-  tokens.push({ type: 'comment_start', value: '/*', subtype: 'multi' });
+  tokens.push({ type: 'comment_start', value: '/*' });
   curr += 1;
   while (curr < code.length && !isMultiLineCommentEnd(code, curr)) {
     value += code[curr];
     curr++;
   }
-  tokens.push({ type: 'comment', value, subtype: 'multi' });
+  tokens.push({ type: 'comment', value });
 
   if (curr < code.length) {
-    tokens.push({ type: 'comment_end', value: '*/', subtype: 'multi' });
+    tokens.push({ type: 'comment_end', value: '*/' });
     curr += 2;
   } else {
     console.warn('multi-line comment unclosed at end of file');
@@ -599,13 +642,13 @@ function isMultiLineCommentEnd(code: string, curr: number) {
 
 function singleLineComment(char: string, code: string, curr: number, tokens: Token[]) {
   let value = '';
-  tokens.push({ type: 'comment_start', value: '//', subtype: 'single' });
+  tokens.push({ type: 'comment_start', value: '//' });
   curr += 1; // Skip the next character
   while (curr < code.length && code[curr] !== '\n') {
     value += code[curr];
     curr++;
   }
-  tokens.push({ type: 'comment', value, subtype: 'single' });
+  tokens.push({ type: 'comment', value });
   return { char, curr };
 }
 
@@ -627,18 +670,18 @@ function escapeSequence(tokens: Token[], value: string, char: string, code: stri
 
 function isEscapeSequence(char: string) {
   return (
-    char === 'n' ||
-    char === 't' ||
-    char === 'r' ||
-    char === 'v' ||
-    char === 'b' ||
-    char === 'a' ||
-    char === 'f' ||
-    char === '?' ||
     char === "'" ||
     char === '"' ||
     char === '0' ||
-    char === '\\'
+    char === '?' ||
+    char === '\\' ||
+    char === 'a' ||
+    char === 'b' ||
+    char === 'f' ||
+    char === 'n' ||
+    char === 'r' ||
+    char === 't' ||
+    char === 'v'
   );
 }
 

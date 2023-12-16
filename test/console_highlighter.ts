@@ -40,6 +40,7 @@ const colorMap = {
   keyword: (s: string) => pc.bold(pc.magenta(s)),
   name: (s: string) => pc.bold(pc.red(s)),
   string: (s: string) => pc.bold(pc.green(s)),
+  quote: (s: string) => pc.bold(pc.green(s)),
   'quote double': (s: string) => pc.bold(pc.green(s)),
   'quote single': (s: string) => pc.bold(pc.green(s)),
   format_specifier: (s: string) => pc.yellow(s),

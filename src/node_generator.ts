@@ -3,7 +3,6 @@ import { Token } from './tokenizer.js';
 export type Node = {
   type: string;
   value: string;
-  subtype?: string;
 };
 
 export default function nodeGenerator(tokens: Token[]) {
@@ -40,9 +39,9 @@ export default function nodeGenerator(tokens: Token[]) {
         square_count--;
         square_count >= 0 && (token.type += ' bracket' + (square_count % 3));
         break;
-      case 'quote':
-        token.type += ' ' + token.subtype;
-        break;
+      // case 'quote':
+      // token.type += ' ' + token.subtype;
+      // break;
       default:
         break;
     }

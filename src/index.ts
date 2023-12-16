@@ -1,7 +1,7 @@
-import tokenizer from './tokenizer.js';
-import nodeGenerator from './node_generator.js';
-import classHighlighter, { inlineHighlighter } from './highlighter.js';
 import { one_dark_pro } from './constants.js';
+import classHighlighter, { inlineHighlighter } from './highlighter.js';
+import nodeGenerator from './node_generator.js';
+import tokenizer from './tokenizer.js';
 
 export type AuroraConfig =
   | {
@@ -18,14 +18,14 @@ const defaultConfig: AuroraConfig = {
 
 export default function aurora(code: string, config = defaultConfig) {
   const tokens = tokenizer(code);
-  const nodes = nodeGenerator(tokens);
+  // const nodes = nodeGenerator(tokens);
   let highlighted = '';
   if (config.mode === 'class') {
-    highlighted = classHighlighter(nodes);
+    highlighted = classHighlighter(tokens);
   } else {
-    highlighted = inlineHighlighter(nodes, config.styles || one_dark_pro);
+    highlighted = inlineHighlighter(tokens, config.styles || one_dark_pro);
   }
   return highlighted;
 }
 
-export { tokenizer, nodeGenerator, classHighlighter, inlineHighlighter, one_dark_pro };
+export { classHighlighter, inlineHighlighter, nodeGenerator, one_dark_pro, tokenizer };
