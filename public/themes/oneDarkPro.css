@@ -67,6 +67,10 @@
   color: #98c379;
 }
 
+.aurora-quote.angle {
+  color: #98c379;
+}
+
 /* Format specifier color */
 .aurora-format_specifier {
   color: #d19a66;

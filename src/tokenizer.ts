@@ -282,9 +282,10 @@ function headerFileLiteral(char: string, code: string, curr: number, tokens: Tok
   tokens.push({ type: 'whitespace', value });
 
   value = '';
-  tokens.push({ type: 'quote double', value: '"' });
+  // tokens.push({ type: 'quote double', value: '"' });
 
   if (char === '"') {
+    tokens.push({ type: 'quote double', value: '"' });
     char = code[++curr];
     while (char !== '"') {
       if (curr >= code.length) {
@@ -302,7 +303,7 @@ function headerFileLiteral(char: string, code: string, curr: number, tokens: Tok
   }
 
   if (char === '<') {
-    // headerFile = char == '<' ? '&lt' : char;
+    tokens.push({ type: 'quote angle', value: '<' });
     char = code[++curr];
     while (char !== '>') {
       if (curr >= code.length) {

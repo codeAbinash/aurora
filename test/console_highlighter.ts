@@ -43,6 +43,7 @@ const colorMap = {
   quote: (s: string) => pc.bold(pc.green(s)),
   'quote double': (s: string) => pc.bold(pc.green(s)),
   'quote single': (s: string) => pc.bold(pc.green(s)),
+  'quote angle': (s: string) => pc.bold(pc.green(s)),
   format_specifier: (s: string) => pc.yellow(s),
   number: (s: string) => pc.yellow(s),
   bin_prefix: (s: string) => pc.bold(pc.red(s)),
