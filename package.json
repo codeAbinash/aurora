@@ -1,7 +1,7 @@
 {
   "name": "aurora-code",
   "type": "module",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "The C code highlighting engine for the web.",
   "license": "MIT",
   "author": "Abinash Karmakar",

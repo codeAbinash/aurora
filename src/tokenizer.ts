@@ -6,61 +6,63 @@
 
 import { DEFINED, KEYWORDS } from './constants';
 
+type TokenType =
+  | 'comment_start'
+  | 'comment_end'
+  | 'comment'
+  | 'preprocessor'
+  | 'defined'
+  | 'header_file'
+  | 'keyword'
+  | 'name'
+  | 'string'
+  | 'quote double'
+  | 'quote single'
+  | 'quote angle'
+  | 'format_specifier'
+  | 'number'
+  | 'bin_prefix'
+  | 'oct_prefix'
+  | 'hex_prefix'
+  | 'bin_literal'
+  | 'oct_literal'
+  | 'hex_literal'
+  | 'function'
+  | 'operator'
+  | 'escape'
+  | 'comma'
+  | 'semicolon'
+  | 'colon'
+  | 'hash'
+  | 'open_paren'
+  | 'close_paren'
+  | 'open_curly'
+  | 'close_curly'
+  | 'open_square'
+  | 'close_square'
+  | 'whitespace'
+  | 'unknown'
+  | 'open_paren bracket0'
+  | 'open_paren bracket1'
+  | 'open_paren bracket2'
+  | 'close_paren bracket0'
+  | 'close_paren bracket1'
+  | 'close_paren bracket2'
+  | 'open_curly bracket0'
+  | 'open_curly bracket1'
+  | 'open_curly bracket2'
+  | 'close_curly bracket0'
+  | 'close_curly bracket1'
+  | 'close_curly bracket2'
+  | 'open_square bracket0'
+  | 'open_square bracket1'
+  | 'open_square bracket2'
+  | 'close_square bracket0'
+  | 'close_square bracket1'
+  | 'close_square bracket2';
+
 export type Token = {
-  type:
-    | 'comment_start'
-    | 'comment_end'
-    | 'comment'
-    | 'preprocessor'
-    | 'defined'
-    | 'header_file'
-    | 'keyword'
-    | 'name'
-    | 'string'
-    | 'quote double'
-    | 'quote single'
-    | 'quote angle'
-    | 'format_specifier'
-    | 'number'
-    | 'bin_prefix'
-    | 'oct_prefix'
-    | 'hex_prefix'
-    | 'bin_literal'
-    | 'oct_literal'
-    | 'hex_literal'
-    | 'function'
-    | 'operator'
-    | 'escape'
-    | 'comma'
-    | 'semicolon'
-    | 'colon'
-    | 'hash'
-    | 'open_paren'
-    | 'close_paren'
-    | 'open_curly'
-    | 'close_curly'
-    | 'open_square'
-    | 'close_square'
-    | 'whitespace'
-    | 'unknown'
-    | 'open_paren bracket0'
-    | 'open_paren bracket1'
-    | 'open_paren bracket2'
-    | 'close_paren bracket0'
-    | 'close_paren bracket1'
-    | 'close_paren bracket2'
-    | 'open_curly bracket0'
-    | 'open_curly bracket1'
-    | 'open_curly bracket2'
-    | 'close_curly bracket0'
-    | 'close_curly bracket1'
-    | 'close_curly bracket2'
-    | 'open_square bracket0'
-    | 'open_square bracket1'
-    | 'open_square bracket2'
-    | 'close_square bracket0'
-    | 'close_square bracket1'
-    | 'close_square bracket2';
+  type: TokenType;
   value: string;
 };
 
@@ -331,14 +333,24 @@ function nameLiteral(char: string, code: string, curr: number, tokens: Token[]) 
     char = code[++curr];
   }
 
-  if (KEYWORDS.includes(value)) tokens.push({ type: 'keyword', value });
-  // If the next character is '(' then it is a function
-  else if (char === '(') {
-    tokens.push({ type: 'function', value });
-    return { char, curr };
+  let extraWhitespace = ''; // Extra whitespace after the name
+  while (char === ' ') {
+    extraWhitespace += char;
+    char = code[++curr];
+  }
+
+  let type: TokenType = 'name';
+  if (char === '(') {
+    type = 'function';
+  } else if (KEYWORDS.includes(value)) {
+    type = 'keyword';
   } else if (DEFINED.includes(value)) {
-    tokens.push({ type: 'defined', value });
-  } else tokens.push({ type: 'name', value });
+    type = 'defined';
+  }
+
+  tokens.push({ type, value });
+  tokens.push({ type: 'whitespace', value: extraWhitespace });
+
   return { char, curr };
 }
 

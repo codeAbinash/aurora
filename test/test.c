@@ -5,9 +5,9 @@
  * Blazing fast ⚡ - 1000 lines in 5ms 🚀
  * 2023-10-26 📅
  */
-(((((()))))))))))))))))
-[[[[[[[]]]]]]]]]]]]]]]]]]
-{{{{{{{}}}}}}}}}}}}}}}}}}
+// (((((()))))))))))))))))
+// [[[[[[[]]]]]]]]]]]]]]]]]]
+// {{{{{{{}}}}}}}}}}}}}}}}}}
 // Try typing some C code in the textarea there 👉🏻
 
 // 1. Header File Highlighting
@@ -17,7 +17,7 @@
 #include "../include/myheader.h"
 
 // 3. Function Definition Highlighting
-void sayHello(int n) {
+void sayHello    (int n) {
    float f = 10;
    for (size_t i = 0; i < n; i++, f += 0.1) {
       printf("Hello World! \t %d - %2.2f \n", i, f);
@@ -25,7 +25,7 @@ void sayHello(int n) {
 }
 
 // 4. Function Call Highlighting
-sayHello(10);
+sayHello (10);
 
 // 5. Keyword Highlighting
 long long int num = 1234;
