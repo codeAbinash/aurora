@@ -1,7 +1,7 @@
 {
   "name": "aurora-code",
   "type": "module",
-  "version": "2.5.2",
+  "version": "2.5.3",
   "description": "The C code highlighting engine for the web.",
   "license": "MIT",
   "author": "Abinash Karmakar",
@@ -36,14 +36,14 @@
     "prettier:fix": "prettier --write ."
   },
   "devDependencies": {
-    "@types/node": "^20.8.9",
-    "@vitest/ui": "^0.34.6",
-    "picocolors": "^1.0.0",
-    "prettier": "^3.0.3",
-    "terser": "^5.24.0",
-    "typescript": "^5.2.2",
-    "vite": "^4.4.5",
-    "vite-plugin-dts": "^3.6.1",
-    "vitest": "^0.34.6"
+    "@types/node": "^20.14.2",
+    "@vitest/ui": "^1.6.0",
+    "picocolors": "^1.0.1",
+    "prettier": "^3.3.1",
+    "terser": "^5.31.1",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.13",
+    "vite-plugin-dts": "^3.9.1",
+    "vitest": "^1.6.0"
   }
 }
