@@ -1,0 +1,9 @@
+export const WHITESPACE = /\s/;
+// const ESCAPE = /^(n|t|r|v|b|a|f|\\|\?|\'|\"|0)$/;
+// const FORMAT_SPECIFIER_END = /^(d|i|u|o|x|X|f|F|e|E|g|G|c|s|%)$/;
+export const FORMAT_SPECIFIER_WIDTH = /^([0-9]+|\.)$/;
+export const OCT_DIGIT = /^[0-7]$/;
+export const HEX_DIGIT = /^[0-9a-f]$/i;
+export const BIN_DIGIT = /^[01]$/;
+export const NAME = /[a-z_]/i;
+export const DIGIT = /\d/;

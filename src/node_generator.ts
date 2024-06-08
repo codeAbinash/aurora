@@ -1,4 +1,4 @@
-import { Token } from './tokenizer.js';
+import type { Token } from "./types";
 
 export type Node = {
   type: string;

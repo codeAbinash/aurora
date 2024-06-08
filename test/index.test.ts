@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { test } from 'vitest';
 import { Node } from '../src/node_generator';
-import tokenizer from '../src/tokenizer';
+import { tokenizer } from '../src/index';
 import consoleHighlighter from './console_highlighter';
 
 test('tokenize', () => {

@@ -1,0 +1,14 @@
+<script src="../../dist/index.umd.cjs" defer></script>
+
+<link rel="stylesheet" href="../../dist/themes/oneDarkPro.css" />
+
+<body style="background-color: #070e22">
+  <pre><code id="code-block"></code></pre>
+  <script>
+    document.body.onload = () => {
+      const codeBlock = document.getElementById('code-block');
+      const code = 'int main() {\n  printf("Hello World!");\n  return 0;\n}';
+      codeBlock.innerHTML = aurora.default(code);
+    };
+  </script>
+</body>

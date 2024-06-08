@@ -1,7 +1,7 @@
 import { one_dark_pro } from './constants.js';
 import classHighlighter, { inlineHighlighter } from './highlighter.js';
 import nodeGenerator from './node_generator.js';
-import tokenizer from './tokenizer.js';
+import tokenizer from './tokenizer/tokenizer.js';
 
 export type AuroraConfig =
   | {

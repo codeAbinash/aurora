@@ -136,12 +136,12 @@ codeBlock.innerHTML = aurora(code);
 
 ## Using Local Files
 
-Download the https://cdn.jsdelivr.net/npm/aurora-code@latest/dist/index.umd.cjs and https://cdn.jsdelivr.net/npm/aurora-code@latest/dist/themes/one%20dark%20pro.css files and use them locally.
+Download the https://cdn.jsdelivr.net/npm/aurora-code@latest/dist/index.umd.cjs and https://cdn.jsdelivr.net/npm/aurora-code@latest/dist/themes/oneDarkPro.css files and use them locally.
 
 ```html
-<script src="index.umd.cjs" defer></script>
+<script src="../../dist/index.umd.cjs" defer></script>
 
-<link rel="stylesheet" href="oneDarkPro.css" />
+<link rel="stylesheet" href="../../dist/themes/oneDarkPro.css" />
 
 <body style="background-color: #070e22">
   <pre><code id="code-block"></code></pre>
@@ -149,7 +149,7 @@ Download the https://cdn.jsdelivr.net/npm/aurora-code@latest/dist/index.umd.cjs 
     document.body.onload = () => {
       const codeBlock = document.getElementById('code-block');
       const code = 'int main() {\n  printf("Hello World!");\n  return 0;\n}';
-      codeBlock.innerHTML = aurora(code);
+      codeBlock.innerHTML = aurora.default(code);
     };
   </script>
 </body>
