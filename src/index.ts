@@ -1,7 +1,8 @@
 import { one_dark_pro } from './constants.js';
 import classHighlighter, { inlineHighlighter } from './highlighter.js';
-import nodeGenerator from './node_generator.js';
+import nodeGenerator, { Node } from './node_generator.js';
 import tokenizer from './tokenizer/tokenizer.js';
+import { Token, TokenType } from './types.js';
 
 export type AuroraConfig =
   | {
@@ -29,3 +30,4 @@ export default function aurora(code: string, config = defaultConfig) {
 }
 
 export { classHighlighter, inlineHighlighter, nodeGenerator, one_dark_pro, tokenizer };
+export type { Token, TokenType, Node };
