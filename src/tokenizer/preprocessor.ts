@@ -1,4 +1,4 @@
-import type { Token } from "../types";
+import type { Token } from '../types';
 
 export default function preprocessorLiteral(char: string, code: string, curr: number, length: number, tokens: Token[]) {
   let value = char;

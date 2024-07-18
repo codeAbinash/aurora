@@ -10,7 +10,9 @@ import aurora from '../../../dist/index';
 
 async function loadCode() {
   // const res = await fetch('https://codeabinash.github.io/beyond-javascript/learning/c/dsa/linked_list/main.c');
-  const res = await fetch('https://codeabinash.github.io/leetcode-solutions/leetcode/problems/c/remove-duplicates-from-sorted-list.c');
+  const res = await fetch(
+    'https://codeabinash.github.io/leetcode-solutions/leetcode/problems/c/remove-duplicates-from-sorted-list.c',
+  );
   // const res = await fetch('/test.c');
   let code = await res.text();
   code = code.replace(/\r/g, '');

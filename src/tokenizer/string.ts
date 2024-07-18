@@ -1,6 +1,6 @@
-import { FORMAT_SPECIFIER_WIDTH } from "../regex";
-import type { Token } from "../types";
-import { escapeSequence, isCommonFormatSpecifier, isSingleFormatSpecifier } from "./format_specifier";
+import { FORMAT_SPECIFIER_WIDTH } from '../regex';
+import type { Token } from '../types';
+import { escapeSequence, isCommonFormatSpecifier, isSingleFormatSpecifier } from './format_specifier';
 
 export function characterLiteral(tokens: Token[], char: string, code: string, curr: number, length: number) {
   let value = '';

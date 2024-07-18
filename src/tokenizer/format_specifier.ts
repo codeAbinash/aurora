@@ -32,7 +32,7 @@ export function isEscapeSequence(char: string) {
     char === 'v'
   );
 }
-  
+
 export function isCommonFormatSpecifier(ch: string, sensitive = true) {
   ch = sensitive ? ch : ch.toLowerCase();
   return (

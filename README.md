@@ -205,8 +205,6 @@ one_dark_pro = {
 
 Here is an example of theme [css](https://github.com/codeAbinash/aurora/blob/main/public/themes/oneDarkPro.css).
 
-
-
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

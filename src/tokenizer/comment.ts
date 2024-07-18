@@ -1,4 +1,4 @@
-import type { Token } from "../types";
+import type { Token } from '../types';
 
 export function multiLineComment(char: string, code: string, curr: number, tokens: Token[]) {
   let value = '';
